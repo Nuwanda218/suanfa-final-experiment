@@ -1,0 +1,26 @@
+source,group,name,path,optimum,n,capacity,enabled,note
+FSU,fsu_correctness,p01,data/FSU/p01,309,10,165,1,classic FSU correctness instance; optimum computed from reference solution
+FSU,fsu_correctness,p02,data/FSU/p02,51,5,26,1,classic FSU correctness instance; optimum computed from reference solution
+FSU,fsu_correctness,p03,data/FSU/p03,150,6,190,1,classic FSU correctness instance; optimum computed from reference solution
+FSU,fsu_correctness,p04,data/FSU/p04,107,7,50,1,classic FSU correctness instance; optimum computed from reference solution
+FSU,fsu_correctness,p05,data/FSU/p05,900,8,104,1,classic FSU correctness instance; optimum computed from reference solution
+FSU,fsu_correctness,p06,data/FSU/p06,1735,7,170,1,classic FSU correctness instance; optimum computed from reference solution
+FSU,fsu_correctness,p07,data/FSU/p07,1458,15,750,1,classic FSU correctness instance; optimum computed from reference solution
+FSU,fsu_capacity_pressure,p08,data/FSU/p08,13549094,24,6404180,1,capacity pressure sample from FSU reference solution
+UU,uu_low,f1_l-d_kp_10_269,data/UU/f1_l-d_kp_10_269,295,10,269,1,low dimensional integer instance
+UU,uu_low,f2_l-d_kp_20_878,data/UU/f2_l-d_kp_20_878,1024,20,878,1,low dimensional integer instance
+UU,uu_low,f5_l-d_kp_15_375,data/UU/f5_l-d_kp_15_375,4810694,15,3750000,1,decimal instance; values/weights/capacity should be scaled by 10000; original optimum 481.0694
+UU,uu_low,f8_l-d_kp_23_10000,data/UU/f8_l-d_kp_23_10000,9767,23,10000,1,low dimensional integer instance with larger capacity
+UU,uu_low,f10_l-d_kp_20_879,data/UU/f10_l-d_kp_20_879,1025,20,879,1,low dimensional integer instance
+UU,uu_large_uncorrelated,knapPI_1_100_1000_1,data/UU/knapPI_1_100_1000_1,9147,100,995,1,large scale uncorrelated instance
+UU,uu_large_uncorrelated,knapPI_1_500_1000_1,data/UU/knapPI_1_500_1000_1,28857,500,2543,1,large scale uncorrelated instance
+UU,uu_large_uncorrelated,knapPI_1_1000_1000_1,data/UU/knapPI_1_1000_1000_1,54503,1000,5002,1,large scale uncorrelated instance
+UU,uu_large_weakly_correlated,knapPI_2_100_1000_1,data/UU/knapPI_2_100_1000_1,1514,100,995,1,large scale weakly correlated instance
+UU,uu_large_strongly_correlated,knapPI_3_100_1000_1,data/UU/knapPI_3_100_1000_1,2397,100,997,1,large scale strongly correlated instance
+JJ,jj_hard,n_400_c_1000000_g_10_f_0.1_eps_0.0001_s_100,data/JJ/n_400_c_1000000_g_10_f_0.1_eps_0.0001_s_100,1004190,400,1000000,1,JJ hard instance with known optimum; copied test.in/outp.out/time.out
+JJ,jj_hard,n_600_c_1000000_g_10_f_0.1_eps_0.0001_s_100,data/JJ/n_600_c_1000000_g_10_f_0.1_eps_0.0001_s_100,1004855,600,1000000,1,JJ hard instance with known optimum; copied test.in/outp.out/time.out
+JJ,jj_hard,n_800_c_1000000_g_10_f_0.1_eps_0.0001_s_100,data/JJ/n_800_c_1000000_g_10_f_0.1_eps_0.0001_s_100,1006050,800,1000000,1,JJ hard instance with known optimum; copied test.in/outp.out/time.out
+JJ,jj_hard,n_1000_c_1000000_g_10_f_0.1_eps_0.0001_s_100,data/JJ/n_1000_c_1000000_g_10_f_0.1_eps_0.0001_s_100,1007293,1000,1000000,1,JJ hard instance with known optimum; copied test.in/outp.out/time.out
+JJ,jj_hard,n_1200_c_1000000_g_10_f_0.1_eps_0.0001_s_100,data/JJ/n_1200_c_1000000_g_10_f_0.1_eps_0.0001_s_100,1009238,1200,1000000,1,JJ hard instance with known optimum; copied test.in/outp.out/time.out
+JJ,jj_hard_large_capacity,n_400_c_100000000_g_10_f_0.1_eps_0.0001_s_100,data/JJ/n_400_c_100000000_g_10_f_0.1_eps_0.0001_s_100,100002908,400,100000000,1,JJ hard instance with known optimum; copied test.in/outp.out/time.out; intended for DP capacity boundary observation
+JJ,jj_hard_large_capacity,n_400_c_10000000000_g_10_f_0.1_eps_0.0001_s_100,data/JJ/n_400_c_10000000000_g_10_f_0.1_eps_0.0001_s_100,9999942809,400,10000000000,1,JJ hard instance with known optimum; copied test.in/outp.out/time.out; intended for DP capacity boundary observation
