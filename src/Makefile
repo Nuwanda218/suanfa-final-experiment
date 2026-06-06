@@ -11,11 +11,20 @@
 #
 # 后续添加 reader、algorithm、runner 的 .cpp 文件后，只需要扩展 SOURCES 即可。
 
+# 明确指定 mingw32-make 使用 Windows cmd.exe 执行命令。
+# 这样无论用户从 PowerShell 还是 cmd 调用，都不会依赖 Git Bash 中的 rm/sh 等 Unix 工具。
+SHELL := cmd.exe
+.SHELLFLAGS := /C
+
 CXX := g++
 CXXFLAGS := -std=c++17 -O2 -Wall -Wextra
 
-TARGET := ../experiments/knapsack_experiment
-TEST_TARGET := ../experiments/core_utils_test
+TARGET := ../experiments/knapsack_experiment.exe
+TEST_TARGET := ../experiments/core_utils_test.exe
+
+# Windows 下给 cmd 使用的路径。编译时 g++ 可以接受 /，但 cmd 的 del/运行命令用 \ 更稳定。
+TARGET_WIN := ..\experiments\knapsack_experiment.exe
+TEST_TARGET_WIN := ..\experiments\core_utils_test.exe
 
 SOURCES := main.cpp
 TEST_SOURCES := tests/core_utils_test.cpp
@@ -32,13 +41,14 @@ $(TARGET): $(SOURCES)
 	$(CXX) $(CXXFLAGS) $(SOURCES) -o $(TARGET)
 
 test: $(TEST_TARGET)
-	$(TEST_TARGET)
+	$(TEST_TARGET_WIN)
 
 $(TEST_TARGET): $(TEST_SOURCES) core/knapsack_types.h core/experiment_types.h core/constants.h utils/string_utils.h utils/csv_utils.h utils/timer.h
 	$(CXX) $(CXXFLAGS) $(TEST_SOURCES) -o $(TEST_TARGET)
 
 run: all
-	$(TARGET)
+	$(TARGET_WIN)
 
 clean:
-	rm -f $(TARGET) $(TEST_TARGET)
+	if exist $(TARGET_WIN) del /F /Q $(TARGET_WIN)
+	if exist $(TEST_TARGET_WIN) del /F /Q $(TEST_TARGET_WIN)
