@@ -1,8 +1,13 @@
 # 0/1 背包结课实验 Makefile
 #
-# 当前 Makefile 先支持两个目标：
-# 1. all：编译主程序骨架，输出到 ../experiments/knapsack_experiment
+# 默认直接执行 make 或 mingw32-make 时，会先清理旧的可执行文件，再重新编译主程序。
+# 如果系统安装的是 GNU make，可以执行：make -C 3024244427-3-1/src
+# 当前 Windows/MinGW 环境中可用的是 mingw32-make，因此可执行：mingw32-make -C 3024244427-3-1/src
+#
+# 其他常用目标：
+# 1. build：只编译主程序，不主动清理
 # 2. test：编译并运行核心类型与工具函数测试
+# 3. run：重新编译后运行主程序
 #
 # 后续添加 reader、algorithm、runner 的 .cpp 文件后，只需要扩展 SOURCES 即可。
 
@@ -15,9 +20,13 @@ TEST_TARGET := ../experiments/core_utils_test
 SOURCES := main.cpp
 TEST_SOURCES := tests/core_utils_test.cpp
 
-.PHONY: all test clean run
+.PHONY: all build test clean run
 
-all: $(TARGET)
+# 默认目标：先 clean 再 build，避免旧可执行文件影响验证。
+all: clean build
+
+# 只编译主程序，不主动清理；供 test/run 或后续脚本按需复用。
+build: $(TARGET)
 
 $(TARGET): $(SOURCES)
 	$(CXX) $(CXXFLAGS) $(SOURCES) -o $(TARGET)
