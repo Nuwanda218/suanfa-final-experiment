@@ -9,7 +9,7 @@
 # 2. test：编译并运行当前已有测试
 # 3. run：重新编译后运行主程序
 #
-# 后续添加回溯、runner 的 .cpp 文件后，只需要扩展 SOURCES 或对应测试源即可。
+# 后续添加 runner 的 .cpp 文件后，只需要扩展 SOURCES 或对应测试源即可。
 
 # 明确指定 mingw32-make 使用 Windows cmd.exe 执行命令。
 # 这样无论用户从 PowerShell 还是 cmd 调用，都不会依赖 Git Bash 中的 rm/sh 等 Unix 工具。
@@ -26,6 +26,7 @@ CORE_TEST_TARGET := ../experiments/core_utils_test.exe
 READER_TEST_TARGET := ../experiments/reader_test.exe
 GREEDY_TEST_TARGET := ../experiments/greedy_test.exe
 DP_TEST_TARGET := ../experiments/dp_test.exe
+BACKTRACKING_TEST_TARGET := ../experiments/backtracking_test.exe
 
 # Windows 下给 cmd 使用的路径。编译时 g++ 可以接受 /，但 cmd 的 del/运行命令用 \ 更稳定。
 TARGET_WIN := ..\experiments\knapsack_experiment.exe
@@ -33,17 +34,20 @@ CORE_TEST_TARGET_WIN := ..\experiments\core_utils_test.exe
 READER_TEST_TARGET_WIN := ..\experiments\reader_test.exe
 GREEDY_TEST_TARGET_WIN := ..\experiments\greedy_test.exe
 DP_TEST_TARGET_WIN := ..\experiments\dp_test.exe
+BACKTRACKING_TEST_TARGET_WIN := ..\experiments\backtracking_test.exe
 
 SOURCES := main.cpp
 READER_SOURCES := readers/fsu_reader.cpp readers/uu_reader.cpp readers/jj_reader.cpp
 GREEDY_SOURCES := algorithms/greedy_knapsack.cpp
 DP_SOURCES := algorithms/dp_knapsack.cpp
+BACKTRACKING_SOURCES := algorithms/backtracking_knapsack.cpp
 CORE_TEST_SOURCES := tests/core_utils_test.cpp
 READER_TEST_SOURCES := tests/reader_test.cpp $(READER_SOURCES)
 GREEDY_TEST_SOURCES := tests/greedy_test.cpp $(GREEDY_SOURCES) $(READER_SOURCES)
 DP_TEST_SOURCES := tests/dp_test.cpp $(DP_SOURCES) $(READER_SOURCES)
+BACKTRACKING_TEST_SOURCES := tests/backtracking_test.cpp $(BACKTRACKING_SOURCES) $(READER_SOURCES)
 
-.PHONY: all build test clean run core-test reader-test greedy-test dp-test
+.PHONY: all build test clean run core-test reader-test greedy-test dp-test backtracking-test
 
 # 默认目标：先 clean 再 build，避免旧可执行文件影响验证。
 all: clean build
@@ -55,7 +59,7 @@ $(TARGET): $(SOURCES)
 	$(CXX) $(CXXFLAGS) $(SOURCES) -o $(TARGET) $(LDFLAGS)
 
 # test 会运行当前已有的全部测试。后续增加算法测试时继续挂到这里。
-test: core-test reader-test greedy-test dp-test
+test: core-test reader-test greedy-test dp-test backtracking-test
 
 core-test: $(CORE_TEST_TARGET)
 	$(CORE_TEST_TARGET_WIN)
@@ -69,6 +73,9 @@ greedy-test: $(GREEDY_TEST_TARGET)
 dp-test: $(DP_TEST_TARGET)
 	$(DP_TEST_TARGET_WIN)
 
+backtracking-test: $(BACKTRACKING_TEST_TARGET)
+	$(BACKTRACKING_TEST_TARGET_WIN)
+
 $(CORE_TEST_TARGET): $(CORE_TEST_SOURCES) core/knapsack_types.h core/experiment_types.h core/constants.h utils/string_utils.h utils/csv_utils.h utils/timer.h
 	$(CXX) $(CXXFLAGS) $(CORE_TEST_SOURCES) -o $(CORE_TEST_TARGET) $(LDFLAGS)
 
@@ -81,6 +88,9 @@ $(GREEDY_TEST_TARGET): $(GREEDY_TEST_SOURCES) algorithms/greedy_knapsack.h reade
 $(DP_TEST_TARGET): $(DP_TEST_SOURCES) algorithms/dp_knapsack.h readers/data_reader.h core/knapsack_types.h core/experiment_types.h core/constants.h utils/timer.h
 	$(CXX) $(CXXFLAGS) $(DP_TEST_SOURCES) -o $(DP_TEST_TARGET) $(LDFLAGS)
 
+$(BACKTRACKING_TEST_TARGET): $(BACKTRACKING_TEST_SOURCES) algorithms/backtracking_knapsack.h readers/data_reader.h core/knapsack_types.h core/experiment_types.h core/constants.h utils/timer.h
+	$(CXX) $(CXXFLAGS) $(BACKTRACKING_TEST_SOURCES) -o $(BACKTRACKING_TEST_TARGET) $(LDFLAGS)
+
 run: all
 	$(TARGET_WIN)
 
@@ -90,3 +100,4 @@ clean:
 	if exist $(READER_TEST_TARGET_WIN) del /F /Q $(READER_TEST_TARGET_WIN)
 	if exist $(GREEDY_TEST_TARGET_WIN) del /F /Q $(GREEDY_TEST_TARGET_WIN)
 	if exist $(DP_TEST_TARGET_WIN) del /F /Q $(DP_TEST_TARGET_WIN)
+	if exist $(BACKTRACKING_TEST_TARGET_WIN) del /F /Q $(BACKTRACKING_TEST_TARGET_WIN)
