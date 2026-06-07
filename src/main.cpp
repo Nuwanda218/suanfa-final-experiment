@@ -2,34 +2,106 @@
  * @file main.cpp
  * @brief 0/1 背包三算法对比实验程序入口。
  *
- * 当前 Task 3 只建立可编译的项目骨架：核心类型、工具函数、Makefile 和一个简单入口。
- * 后续 Task 会继续补充数据读取、三种算法、批量实验运行器和 CSV 结果输出。
+ * 主程序负责把命令行参数转换为实验配置过滤规则，并调用 runner 批量执行实验。
+ * 为避免误触发长时间实验，不带参数时只打印用法，不直接运行全部数据。
  */
 
-#include "core/constants.h"
 #include "core/experiment_types.h"
-#include "core/knapsack_types.h"
-#include "utils/timer.h"
+#include "readers/data_reader.h"
+#include "runner/experiment_runner.h"
+#include "runner/result_writer.h"
 
 #include <iostream>
+#include <string>
+#include <vector>
 
-int main() {
-    Timer timer;
+namespace {
+void printUsage() {
+    std::cout << "0/1 Knapsack Experiment" << '\n';
+    std::cout << "usage:" << '\n';
+    std::cout << "  knapsack_experiment --check-data" << '\n';
+    std::cout << "  knapsack_experiment --run-all" << '\n';
+    std::cout << "  knapsack_experiment --run-group <group>" << '\n';
+    std::cout << "  knapsack_experiment --run-one <source> <name>" << '\n';
+}
 
-    // 这里先构造一个最小实例，用于验证核心结构可以被主程序正常包含和使用。
-    // 真正的数据读取会在后续 reader 模块中实现。
-    KnapsackInstance demo;
-    demo.source = "DEMO";
-    demo.group = "skeleton";
-    demo.name = "empty_instance";
-    demo.capacity = 0;
-    demo.optimum = -1;
+void writeExperimentOutputs(const std::vector<ExperimentRecord>& records, const std::string& project_root) {
+    const std::string results_path = project_root + "/experiments/results.csv";
+    const std::string timeout_path = project_root + "/experiments/timeout_cases.csv";
+    const std::string log_path = project_root + "/experiments/run_log.txt";
 
-    std::cout << "0/1 Knapsack Experiment Skeleton" << '\n';
-    std::cout << "status=" << STATUS_OK << '\n';
-    std::cout << "dp_capacity_limit=" << DP_CAPACITY_LIMIT << '\n';
-    std::cout << "demo_items=" << demo.n() << '\n';
-    std::cout << "startup_ms=" << timer.elapsedMs() << '\n';
+    writeResultsCsv(results_path, records);
+    writeTimeoutCasesCsv(timeout_path, records);
+    writeRunLog(log_path, records, results_path);
 
-    return 0;
+    std::cout << "records=" << records.size() << '\n';
+    std::cout << "results=" << results_path << '\n';
+    std::cout << "timeouts=" << timeout_path << '\n';
+    std::cout << "log=" << log_path << '\n';
+}
+
+std::vector<DatasetConfig> filterGroup(const std::vector<DatasetConfig>& configs, const std::string& group) {
+    std::vector<DatasetConfig> filtered;
+    for (const DatasetConfig& config : configs) {
+        if (config.group == group) {
+            filtered.push_back(config);
+        }
+    }
+    return filtered;
+}
+
+std::vector<DatasetConfig> filterOne(const std::vector<DatasetConfig>& configs,
+                                     const std::string& source,
+                                     const std::string& name) {
+    std::vector<DatasetConfig> filtered;
+    for (const DatasetConfig& config : configs) {
+        if (config.source == source && config.name == name) {
+            filtered.push_back(config);
+        }
+    }
+    return filtered;
+}
+}
+
+int main(int argc, char* argv[]) {
+    const std::string project_root = "..";
+    const std::string csv_path = project_root + "/data/datasets.csv";
+
+    if (argc <= 1) {
+        printUsage();
+        return 0;
+    }
+
+    const std::string command = argv[1];
+    const std::vector<DatasetConfig> configs = readDatasetConfigs(csv_path);
+
+    if (command == "--check-data") {
+        int enabled_count = 0;
+        for (const DatasetConfig& config : configs) {
+            if (config.enabled) {
+                ++enabled_count;
+            }
+        }
+        std::cout << "datasets=" << configs.size() << '\n';
+        std::cout << "enabled=" << enabled_count << '\n';
+        return 0;
+    }
+
+    if (command == "--run-all") {
+        writeExperimentOutputs(runExperiments(configs, project_root), project_root);
+        return 0;
+    }
+
+    if (command == "--run-group" && argc >= 3) {
+        writeExperimentOutputs(runExperiments(filterGroup(configs, argv[2]), project_root), project_root);
+        return 0;
+    }
+
+    if (command == "--run-one" && argc >= 4) {
+        writeExperimentOutputs(runExperiments(filterOne(configs, argv[2], argv[3]), project_root), project_root);
+        return 0;
+    }
+
+    printUsage();
+    return 1;
 }
